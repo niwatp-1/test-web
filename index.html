@@ -162,7 +162,7 @@
                         if (foundOwner) { 
                             onLogin('owner');
                         } else {
-                            setError('รหัสเจ้าของ หรือ รหัสผ่าน ไม่ถูกต้อง (ลองใช้ ADMIN / admin)');
+                            setError('รหัสเจ้าของ หรือ รหัสผ่าน ไม่ถูกต้อง (ลองใช้ ADMIN / 1234)');
                         }
                     }
                     else if (role === 'operator') {
@@ -1806,7 +1806,7 @@
                 { id: 'L88', name: 'คุณเฮง', phone: '081-111-2222', password: '1234' }
             ]);
             const [owners, setOwners] = useState([
-                { id: 'ADMIN', name: 'Main Admin', password: 'admin' }
+                { id: 'ADMIN', name: 'Main Admin', password: '1234' }
             ]);
             const [operators, setOperators] = useState([
                 { username: 'OP1', password: '111', name: 'น้องคีย์ 1', leaderId: 'L88' }
