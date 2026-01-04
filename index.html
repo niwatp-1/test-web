@@ -1227,18 +1227,41 @@
             const [view, setView] = useState('login');
             const [user, setUser] = useState(null);
             
-            // Global State
-            const [transactions, setTransactions] = useState(() => { const saved = localStorage.getItem('grand_transactions'); return saved ? JSON.parse(saved) : []; });
-            const [payoutRates, setPayoutRates] = useState(DEFAULT_PAYOUT_RATES);
-            // Added reward1 to initial state
-            const [winningNumbers, setWinningNumbers] = useState({ reward1: '', top3: '', bottom3: '', front3: '', tod3: '', return3: '', top2: '', bottom2: '', return2: '', runTop: '', runBottom: '' });
+            // Global State - Load from LocalStorage if available
+            const [transactions, setTransactions] = useState(() => { 
+                const saved = localStorage.getItem('grand_transactions'); 
+                return saved ? JSON.parse(saved) : []; 
+            });
             
-            // Data Injection
-            const [leaders, setLeaders] = useState(DEFAULT_LEADERS);
-            const [owners] = useState(DEFAULT_OWNERS);
-            const [operators, setOperators] = useState(DEFAULT_OPERATORS);
+            const [payoutRates, setPayoutRates] = useState(() => {
+                const saved = localStorage.getItem('grand_payoutRates');
+                return saved ? JSON.parse(saved) : DEFAULT_PAYOUT_RATES;
+            });
 
+            const [winningNumbers, setWinningNumbers] = useState(() => {
+                const saved = localStorage.getItem('grand_winningNumbers');
+                return saved ? JSON.parse(saved) : { reward1: '', top3: '', bottom3: '', front3: '', tod3: '', return3: '', top2: '', bottom2: '', return2: '', runTop: '', runBottom: '' };
+            });
+            
+            // Data Injection - Load from LocalStorage if available
+            const [leaders, setLeaders] = useState(() => {
+                const saved = localStorage.getItem('grand_leaders');
+                return saved ? JSON.parse(saved) : DEFAULT_LEADERS;
+            });
+
+            const [owners] = useState(DEFAULT_OWNERS);
+
+            const [operators, setOperators] = useState(() => {
+                const saved = localStorage.getItem('grand_operators');
+                return saved ? JSON.parse(saved) : DEFAULT_OPERATORS;
+            });
+
+            // Save to LocalStorage whenever state changes
             useEffect(() => { localStorage.setItem('grand_transactions', JSON.stringify(transactions)); }, [transactions]);
+            useEffect(() => { localStorage.setItem('grand_payoutRates', JSON.stringify(payoutRates)); }, [payoutRates]);
+            useEffect(() => { localStorage.setItem('grand_winningNumbers', JSON.stringify(winningNumbers)); }, [winningNumbers]);
+            useEffect(() => { localStorage.setItem('grand_leaders', JSON.stringify(leaders)); }, [leaders]);
+            useEffect(() => { localStorage.setItem('grand_operators', JSON.stringify(operators)); }, [operators]);
 
             const handleLogin = (role, userData) => { setUser(userData); setView(role); };
             const handleLogout = () => { setUser(null); setView('login'); };
@@ -1256,6 +1279,7 @@
 
             const handleDeleteLeader = (id) => {
                 setLeaders(prev => prev.filter(l => l.id !== id));
+                // Optional: Delete related operators? For now, keep them but they might be orphaned.
             };
 
             const handleAddOperator = (newOperator) => {
@@ -1271,9 +1295,8 @@
             };
 
             const resetData = () => {
-                if(confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลยอดขายทั้งหมดใช่หรือไม่?\nการกระทำนี้ไม่สามารถย้อนกลับได้')) {
+                if(confirm('⚠️ คำเตือน: คุณต้องการล้างข้อมูลยอดขายทั้งหมดและผลรางวัลใช่หรือไม่?\n(ข้อมูลหัวสายและคนคีย์จะไม่หาย)')) {
                     setTransactions([]);
-                    // Reset all winning numbers including reward1
                     setWinningNumbers({ reward1: '', top3: '', bottom3: '', front3: '', tod3: '', return3: '', top2: '', bottom2: '', return2: '', runTop: '', runBottom: '' });
                 }
             };
